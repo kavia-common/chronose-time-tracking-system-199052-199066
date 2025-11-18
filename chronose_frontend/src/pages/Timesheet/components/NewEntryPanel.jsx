@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTimesheet } from "../state/useTimesheetState";
+import { canEditEntries, canSubmitOwnTimesheet, currentUserRole } from "../../../lib/permissions";
 
 /**
  * PUBLIC_INTERFACE
@@ -7,6 +8,9 @@ import { useTimesheet } from "../state/useTimesheetState";
  * - Save as Draft: persists to localStorage
  * - Save: stores to local state (unsent)
  * - Submit: sets week status to Submitted and locks
+ * RBAC & State:
+ * - Disable entry editing if week is Submitted/Approved
+ * - All roles can submit their own timesheet
  */
 export default function NewEntryPanel() {
   const {
@@ -21,7 +25,10 @@ export default function NewEntryPanel() {
     status,
   } = useTimesheet();
 
-  const disabled = status === "Submitted" || status === "Approved";
+  const role = useMemo(() => currentUserRole(), []);
+  const lockedByStatus = status === "Submitted" || status === "Approved";
+  const canEdit = canEditEntries(role) && !lockedByStatus;
+  const canSubmitSelf = canSubmitOwnTimesheet(role);
 
   return (
     <div className="ts-panel ts-card">
@@ -31,7 +38,7 @@ export default function NewEntryPanel() {
           aria-selected={mode === "work"}
           className={`ts-seg ${mode === "work" ? "ts-seg--active" : ""}`}
           onClick={() => setMode("work")}
-          disabled={disabled}
+          disabled={!canEdit}
         >
           Work Entry
         </button>
@@ -40,7 +47,7 @@ export default function NewEntryPanel() {
           aria-selected={mode === "leave"}
           className={`ts-seg ${mode === "leave" ? "ts-seg--active" : ""}`}
           onClick={() => setMode("leave")}
-          disabled={disabled}
+          disabled={!canEdit}
         >
           Leave Request
         </button>
@@ -50,9 +57,9 @@ export default function NewEntryPanel() {
         className="ts-form"
         onSubmit={(e) => {
           e.preventDefault();
-          if (canSubmit) saveEntry();
+          if (canSubmit && canEdit) saveEntry();
         }}
-        aria-disabled={disabled}
+        aria-disabled={!canEdit}
       >
         <div className="ts-form__row">
           <label>
@@ -62,7 +69,7 @@ export default function NewEntryPanel() {
               value={form.project}
               onChange={(e) => updateForm({ project: e.target.value })}
               placeholder="Enter project"
-              disabled={disabled}
+              disabled={!canEdit}
             />
           </label>
         </div>
@@ -75,7 +82,7 @@ export default function NewEntryPanel() {
               value={form.task}
               onChange={(e) => updateForm({ task: e.target.value })}
               placeholder="e.g., Testing"
-              disabled={disabled}
+              disabled={!canEdit}
             />
           </label>
         </div>
@@ -86,7 +93,7 @@ export default function NewEntryPanel() {
             <select
               value={form.type}
               onChange={(e) => updateForm({ type: e.target.value })}
-              disabled={disabled}
+              disabled={!canEdit}
             >
               <option value="">Select</option>
               <option value="work">Work</option>
@@ -104,7 +111,7 @@ export default function NewEntryPanel() {
               value={form.hours}
               onChange={(e) => updateForm({ hours: e.target.value })}
               placeholder="0.00"
-              disabled={disabled}
+              disabled={!canEdit}
             />
           </label>
         </div>
@@ -117,7 +124,7 @@ export default function NewEntryPanel() {
               value={form.notes}
               onChange={(e) => updateForm({ notes: e.target.value })}
               placeholder="Optional notes"
-              disabled={disabled}
+              disabled={!canEdit}
             />
           </label>
         </div>
@@ -128,7 +135,7 @@ export default function NewEntryPanel() {
             className="btn btn--ghost"
             onClick={saveDraft}
             aria-label="Save as Draft"
-            disabled={disabled}
+            disabled={!canEdit}
           >
             Save as Draft
           </button>
@@ -136,7 +143,7 @@ export default function NewEntryPanel() {
             type="submit"
             className="btn btn--secondary"
             aria-label="Save entry"
-            disabled={!canSubmit || disabled}
+            disabled={!canSubmit || !canEdit}
           >
             Save
           </button>
@@ -145,7 +152,7 @@ export default function NewEntryPanel() {
             className="btn btn--primary"
             onClick={submitWeek}
             aria-label="Submit timesheet"
-            disabled={!canSubmit}
+            disabled={!canSubmit || !canSubmitSelf}
           >
             Submit
           </button>

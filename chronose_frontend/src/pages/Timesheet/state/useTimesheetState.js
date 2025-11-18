@@ -36,7 +36,6 @@ const initial = () => {
     selectedDay: today,
     status: "Draft", // Draft | Submitted | Approved | Rejected
     isClockedIn: false,
-    canSeeTeam: false,
     selectedTeam: "my-team",
     form: {
       project: "",
@@ -203,7 +202,6 @@ export function TimesheetProvider({ children }) {
     status: state.status,
     isClockedIn: state.isClockedIn,
     toggleClock,
-    canSeeTeam: state.canSeeTeam,
     selectedTeam: state.selectedTeam,
     setSelectedTeam,
     form: state.form,

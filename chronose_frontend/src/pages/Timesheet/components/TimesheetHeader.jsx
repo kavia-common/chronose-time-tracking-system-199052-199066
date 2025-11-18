@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useTimesheet } from "../state/useTimesheetState";
+import { canViewTeam, currentUserRole } from "../../../lib/permissions";
 
 /**
  * PUBLIC_INTERFACE
@@ -7,10 +8,15 @@ import { useTimesheet } from "../state/useTimesheetState";
  * Behavior:
  * - Status reflects current week's status
  * - Clock button toggles local clock state
+ * RBAC:
+ * - Team selector: visible only for Manager, HR, Admin
  */
 export default function TimesheetHeader() {
-  const { status, isClockedIn, toggleClock, canSeeTeam, selectedTeam, setSelectedTeam } =
+  const { status, isClockedIn, toggleClock, selectedTeam, setSelectedTeam } =
     useTimesheet();
+
+  const role = useMemo(() => currentUserRole(), []);
+  const showTeam = canViewTeam(role);
 
   return (
     <div className="ts-header">
@@ -19,7 +25,7 @@ export default function TimesheetHeader() {
         <span className={`ts-status ts-status--${status.toLowerCase()}`} role="status" aria-live="polite">
           {status}
         </span>
-        {canSeeTeam && (
+        {showTeam && (
           <label className="ts-team">
             <span className="visually-hidden">Select team</span>
             <select

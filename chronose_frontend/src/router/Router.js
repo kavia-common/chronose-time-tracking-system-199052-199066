@@ -2,6 +2,8 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../components/layout/MainLayout";
 import EmployeeTimesheetPage from "../pages/Timesheet/EmployeeTimesheetPage";
+import RequireRole from "../components/auth/RequireRole";
+import { ROLES } from "../lib/permissions";
 
 /**
  * PUBLIC_INTERFACE
@@ -9,9 +11,9 @@ import EmployeeTimesheetPage from "../pages/Timesheet/EmployeeTimesheetPage";
  * Routes:
  * - / -> redirects to /timesheet
  * - /dashboard -> placeholder
- * - /timesheet -> Employee timesheet view
- * - /approvals -> placeholder
- * - /reports -> placeholder
+ * - /timesheet -> Employee timesheet view (all roles)
+ * - /approvals -> restricted to Manager/Admin
+ * - /reports -> placeholder (accessible to all for now)
  */
 export default function AppRouter() {
   return (
@@ -19,8 +21,22 @@ export default function AppRouter() {
       <Route path="/" element={<Navigate to="/timesheet" replace />} />
       <Route element={<MainLayout />}>
         <Route path="/dashboard" element={<Placeholder title="Dashboard" />} />
-        <Route path="/timesheet" element={<EmployeeTimesheetPage />} />
-        <Route path="/approvals" element={<Placeholder title="Approvals" />} />
+        <Route
+          path="/timesheet"
+          element={
+            <RequireRole roles={[ROLES.EMPLOYEE, ROLES.MANAGER, ROLES.HR, ROLES.ADMIN]}>
+              <EmployeeTimesheetPage />
+            </RequireRole>
+          }
+        />
+        <Route
+          path="/approvals"
+          element={
+            <RequireRole roles={[ROLES.MANAGER, ROLES.ADMIN]} redirectTo="/timesheet">
+              <Placeholder title="Approvals" />
+            </RequireRole>
+          }
+        />
         <Route path="/reports" element={<Placeholder title="Reports" />} />
       </Route>
       <Route path="*" element={<NotFound />} />
