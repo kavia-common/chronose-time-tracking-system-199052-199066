@@ -1,0 +1,249 @@
+.timesheet-page {
+  display: flex;
+  flex-direction: column;
+}
+
+.timesheet-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px; /* exact gap per requirement */
+  padding: 24px;
+}
+
+.ts-left {
+  display: grid;
+  grid-auto-rows: min-content;
+  gap: 16px;
+}
+
+.ts-right {
+  position: sticky;
+  top: 72px;
+  align-self: start;
+  display: grid;
+}
+
+.ts-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ts-header__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ts-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.ts-status {
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid #E5E7EB;
+  color: var(--text);
+  background: #F3F4F6;
+}
+.ts-status--draft { background: #F3F4F6; color: var(--text); }
+.ts-status--submitted { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.ts-status--approved { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.ts-status--rejected { background: rgba(239, 68, 68, 0.1); color: var(--error); }
+
+.ts-team select {
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  padding: 6px 10px;
+  background: var(--background);
+  color: var(--text);
+}
+
+.ts-kpis {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.ts-kpi {
+  padding: 12px;
+}
+.ts-kpi__label {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.ts-kpi__value {
+  margin-top: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.ts-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ts-tabs {
+  display: inline-flex;
+  background: var(--background);
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ts-tab {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--text);
+}
+.ts-tab--active {
+  background: #E5E7EB;
+  font-weight: 600;
+}
+
+.ts-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ts-range {
+  margin-left: 8px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+.ts-calendar {
+  background: var(--surface);
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  box-shadow: var(--shadow-1);
+  padding: 12px;
+}
+
+.ts-week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 8px;
+}
+
+.ts-day {
+  background: var(--background);
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  min-height: 120px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.ts-day--today {
+  border-color: var(--primary);
+}
+.ts-day--selected {
+  box-shadow: var(--shadow-2);
+}
+
+.ts-day__header {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+.ts-day__dow {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+.ts-day__entries {
+  display: grid;
+  gap: 6px;
+}
+.ts-chip {
+  font-size: 12px;
+  background: #F3F4F6;
+  color: var(--text);
+  padding: 4px 8px;
+  border-radius: 999px;
+  width: fit-content;
+  border: 1px solid #E5E7EB;
+}
+
+.ts-month-placeholder {
+  padding: 24px;
+}
+
+.ts-panel {
+  padding: 16px;
+}
+
+.ts-segmented {
+  display: inline-flex;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+.ts-seg {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+.ts-seg--active {
+  background: #E5E7EB;
+  font-weight: 600;
+}
+
+.ts-form {
+  display: grid;
+  gap: 12px;
+}
+.ts-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.ts-form__row label {
+  display: grid;
+  gap: 6px;
+  color: var(--text-strong);
+  font-size: 13px;
+}
+.ts-form__row input,
+.ts-form__row select,
+.ts-form__row textarea {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #E5E7EB;
+  background: var(--background);
+  color: var(--text);
+  font-size: 14px;
+}
+.ts-form__full {
+  grid-column: 1 / -1;
+}
+.ts-form__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .timesheet-grid {
+    grid-template-columns: 1fr;
+  }
+  .ts-right {
+    position: static;
+  }
+  .ts-kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
